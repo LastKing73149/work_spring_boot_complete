@@ -18,7 +18,7 @@
 <div style="background: #f4f4f4; padding: 10px; margin-bottom: 20px;">
     Вы вошли как: <b sec:authentication="name">Имя</b> |
     Роли: <span th:each="authority : ${#authentication.getAuthorities()}">
-         <i th:text="${authority.getAuthority().replace('ROLE_', '') + ' '}"></i>
+         <i th:text="${authority.getAuthority().replace('ROLE_', '').replace('FACTOR_PASSWORD', '') + ' '}"></i>
      </span>
 </div>
 <h2> Список пользователей</h2>

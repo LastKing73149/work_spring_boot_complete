@@ -34,8 +34,8 @@
 
     <label for="roles">Роль:</label>
     <select th:field="*{roles}" id="roles" style="padding: 5px; width: 262px">
-        <option th:value="1">Пользователь(User)</option>
-        <option th:value="2">Администратор(Admin)</option>
+        <option th:value="1">Администратор(Admin)</option>
+        <option th:value="2">Пользователь(User)</option>
     </select>
     <div class="error" th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}">Ошибка роли</div>
     <br/><br/>
