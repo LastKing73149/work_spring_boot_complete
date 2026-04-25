@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Edit User</title>
@@ -12,9 +13,29 @@
     </style>
 </head>
 <body>
+<div style="background: #f4f4f4; padding: 10px; margin-bottom: 20px;">
+     <div>
+    Вы вошли как: <b sec:authentication="name">Имя</b> |
+    Роли: <span th:each="authority : ${#authentication.getAuthorities()}">
+         <i th:text="${authority.getAuthority().replace('ROLE_', '') + ' '}"></i>
+     </span>
+</div>
+<form th:action="@{/logout}" method="post" style="margin-top: 20px;">
+    <button type="submit" style="cursor:pointer;">Выйти</button>
+</form>
+</div>
 <h2>Редактировать пользователя</h2>
 
-<form th:method="PATCH" th:action="@{/users/{id}(id=${user.getId()})}" th:object="${user}">
+<form th:method="PATCH" th:action="@{/admin/{id}(id=${user.id})}" th:object="${user}" method="post">
+
+    <input type="hidden" th:field="*{id}" />
+
+    <label for="username">Никнейм:</label>
+    <input type="text" th:field="*{username}" id="username" readonly/>
+    <br/>
+
+    <label for="password">Новый пароль (оставьте пустым, если не хотите менять):</label>
+    <input type="password" name="password" id="password" />
 
     <label for="name">Имя</label>
     <input type="text" th:field="*{name}" id="name"/>
@@ -36,9 +57,15 @@
     <div style="color: red; font-size: 0.8em;" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Ошибка email</div>
     <br/><br/>
 
-    <button type="submit">Сохранить изменения</button>
+    <label for="roles">Роли:</label>
+    <select th:field="*{roles}" id="roles" name='roles' multiple style="padding: 5px; width: 262px">
+        <option th:value="1">USER</option>
+        <option th:value="2">ADMIN</option>
+    </select>
+
+    <button type="submit" class="btn">Сохранить изменения</button>
 </form>
 <br/>
-<a th:href="@{/users}">Отмена</a>
+<a th:href="@{/admin}">Отмена</a>
 </body>
 </html>

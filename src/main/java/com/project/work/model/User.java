@@ -2,15 +2,29 @@ package com.project.work.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "username", unique = true, nullable = false)
+    @NotEmpty(message = "Никнейм не должен быть пустым")
+    @Size(min = 3, max = 20, message = "Никнейм должен быть от 3 до 20 символов")
+    @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ0-9._]+$", message = "Никнейм может содержать только буквы, цифры, точка и нижнее подчёркивание")
+    private String username;
+
+    @Column(name = "password", nullable = false)
+    private String password;
 
     @Column(name = "name")
     @NotEmpty(message = "Имя не должно быть пустым")
@@ -20,7 +34,7 @@ public class User {
 
     @Column(name = "last_name")
     @NotEmpty(message = "Фамилия не должна быть пустой")
-    @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ]+$", message = "Фамилия должна содержать только буквы")
+        @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ]+$", message = "Фамилия должна содержать только буквы")
     @Size(min = 2, max = 20, message = "Фамилия должна быть от 2 до 20 символов")
     private String lastName;
 
@@ -35,15 +49,60 @@ public class User {
     @Email(message = "Некорректный email")
     private String email;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities(){
+        return roles;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
     public User(){
 
     }
 
-    public User(String name, String lastName, int age, String email){
+    public User(String username, String password, Set<Role> roles, String name, String lastName, Integer age, String email){
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
         this.name = name;
         this.lastName = lastName;
         this.age = age;
         this.email = email;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     public void setId(Long id) {
@@ -64,6 +123,18 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
     }
 
     public Long getId() {
@@ -90,6 +161,7 @@ public class User {
     public String toString(){
         return "User{" +
                 "id=" + id +
+                ", username='" + username + '\'' +
                 ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", age=" + age +
