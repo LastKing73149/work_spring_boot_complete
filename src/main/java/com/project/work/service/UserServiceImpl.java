@@ -44,6 +44,12 @@ public class UserServiceImpl implements UserService{
         User existingUser = userRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Пользователь не найден"));
 
+        User userWithSameName = userRepository.findByUsername(updatedUser.getUsername());
+        if (userWithSameName != null && !userWithSameName.getId().equals(id)) {
+            throw new RuntimeException("Никнейм '" + updatedUser.getUsername() + "' уже занят другим пользователем");
+        }
+
+        existingUser.setUsername(updatedUser.getUsername());
         existingUser.setName(updatedUser.getName());
         existingUser.setLastName(updatedUser.getLastName());
         existingUser.setAge(updatedUser.getAge());

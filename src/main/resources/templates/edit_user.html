@@ -17,7 +17,7 @@
      <div>
     Вы вошли как: <b sec:authentication="name">Имя</b> |
     Роли: <span th:each="authority : ${#authentication.getAuthorities()}">
-         <i th:text="${authority.getAuthority().replace('ROLE_', '') + ' '}"></i>
+         <i th:text="${authority.getAuthority().replace('ROLE_', '').replace('FACTOR_PASSWORD', '') + ' '}"></i>
      </span>
 </div>
 <form th:action="@{/logout}" method="post" style="margin-top: 20px;">
@@ -31,7 +31,7 @@
     <input type="hidden" th:field="*{id}" />
 
     <label for="username">Никнейм:</label>
-    <input type="text" th:field="*{username}" id="username" readonly/>
+    <input type="text" th:field="*{username}" id="username" class="form-control"/>
     <br/>
 
     <label for="password">Новый пароль (оставьте пустым, если не хотите менять):</label>
@@ -59,8 +59,9 @@
 
     <label for="roles">Роли:</label>
     <select th:field="*{roles}" id="roles" name='roles' multiple style="padding: 5px; width: 262px">
-        <option th:value="1">ADMIN</option>
-        <option th:value="2">USER</option>
+        <option th:each="role : ${roles}"
+                th:value="${role.id}"
+                th:text="${role.name.replace('ROLE_','')}">Название Роли</option>
     </select>
 
     <button type="submit" class="btn">Сохранить изменения</button>

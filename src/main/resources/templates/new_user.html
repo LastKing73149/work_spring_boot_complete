@@ -16,7 +16,7 @@
 <div style="background: #f4f4f4; padding: 10px; margin-bottom: 20px;">
     Вы вошли как: <b sec:authentication="name">Имя</b> |
     Роли: <span th:each="authority : ${#authentication.getAuthorities()}">
-         <i th:text="${authority.getAuthority().replace('ROLE_', '') + ' '}"></i>
+         <i th:text="${authority.getAuthority().replace('ROLE_', '').replace('FACTOR_PASSWORD', '') + ' '}"></i>
      </span>
 </div>
 <h2>Добавить нового пользователя</h2>
@@ -33,9 +33,10 @@
     <br/><br/>
 
     <label for="roles">Роль:</label>
-    <select th:field="*{roles}" id="roles" style="padding: 5px; width: 262px">
-        <option th:value="1">Администратор(Admin)</option>
-        <option th:value="2">Пользователь(User)</option>
+    <select th:field="*{roles}" id="roles" name='roles' multiple style="padding: 5px; width: 262px">
+        <option th:each="role : ${roles}"
+                th:value="${role.id}"
+                th:text="${role.name.replace('ROLE_','')}">Название Роли</option>
     </select>
     <div class="error" th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}">Ошибка роли</div>
     <br/><br/>

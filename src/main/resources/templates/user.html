@@ -48,7 +48,9 @@
             </td>
         </tr>
     </table>
-    <a href="/logout" class="logout-link">Выйти из системы</a>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" style="background: none; border: none; color: #d9534f; text-decoration: underline; cursor: pointer">Выйти из системы</button>
+    </form>
 </div>
 
 </body>
